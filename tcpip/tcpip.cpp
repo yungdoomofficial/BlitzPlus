@@ -297,13 +297,15 @@ void TCPServer::remove( TCPStream *s ){
 
 static vector<int> host_ips;
 
-static int findHostIP( const string &t ){
-	int ip=inet_addr( t.c_str() );
-	if( ip!=INADDR_NONE ) return ip;
-	HOSTENT *h=gethostbyname( t.c_str() );
-	if( !h ) return -1;
-	char *p;
-	for( char **list=h->h_addr_list;p=*list;++list ){
+static int findHostIP(const char* t) {
+	int ip = inet_addr(t);
+	if (ip != INADDR_NONE) return ip;
+
+	HOSTENT* h = gethostbyname(t);
+	if (!h) return -1;
+
+	char* p;
+	for (char** list = h->h_addr_list; (p = *list) != nullptr; ++list) {
 		return *(int*)p;
 	}
 	return 0;
